@@ -34,6 +34,7 @@ same as the Catch name; see also ``TEST_PREFIX`` and ``TEST_SUFFIX``.
                          [PROPERTIES name1 value1...]
                          [TEST_LIST var]
                          [REPORTER reporter]
+                         [LIST_REPORTER reporter]
                          [OUTPUT_DIR dir]
                          [OUTPUT_PREFIX prefix]
                          [OUTPUT_SUFFIX suffix]
@@ -101,6 +102,12 @@ same as the Catch name; see also ``TEST_PREFIX`` and ``TEST_SUFFIX``.
     Use the specified reporter when running the test case. The reporter will
     be passed to the Catch executable as ``--reporter reporter``.
 
+  ``LIST_REPORTER reporter``
+    Use the specified reporter when printing the list of test cases. This
+    needs to be JSON reporter, and will default to ``json`` if not provided.
+    The reporter will be passed to the Catch executable as
+    ``--reporter reporter``.
+
   ``OUTPUT_DIR dir``
     If specified, the parameter is passed along as
     ``--out dir/<test_name>`` to Catch executable. The actual file name is the
@@ -161,7 +168,7 @@ function(catch_discover_tests TARGET)
     ""
     "SKIP_IS_FAILURE;ADD_TAGS_AS_LABELS"
     "TEST_PREFIX;TEST_SUFFIX;WORKING_DIRECTORY;TEST_LIST;REPORTER;OUTPUT_DIR;OUTPUT_PREFIX;OUTPUT_SUFFIX;DISCOVERY_MODE"
-    "TEST_SPEC;EXTRA_ARGS;PROPERTIES;DL_PATHS;DL_FRAMEWORK_PATHS"
+    "TEST_SPEC;EXTRA_ARGS;PROPERTIES;DL_PATHS;DL_FRAMEWORK_PATHS;LIST_REPORTER"
     ${ARGN}
   )
 
@@ -174,6 +181,9 @@ function(catch_discover_tests TARGET)
   endif()
   if(NOT _TEST_LIST)
     set(_TEST_LIST ${TARGET}_TESTS)
+  endif()
+  if(NOT _LIST_REPORTER)
+    set(_LIST_REPORTER json)
   endif()
   if(_DL_PATHS AND ${CMAKE_VERSION} VERSION_LESS "3.22.0")
     message(FATAL_ERROR "The DL_PATHS option requires at least cmake 3.22")
@@ -224,6 +234,7 @@ function(catch_discover_tests TARGET)
               -D "TEST_SUFFIX=${_TEST_SUFFIX}"
               -D "TEST_LIST=${_TEST_LIST}"
               -D "TEST_REPORTER=${_REPORTER}"
+              -D "TEST_LIST_REPORTER=${_LIST_REPORTER}"
               -D "TEST_OUTPUT_DIR=${_OUTPUT_DIR}"
               -D "TEST_OUTPUT_PREFIX=${_OUTPUT_PREFIX}"
               -D "TEST_OUTPUT_SUFFIX=${_OUTPUT_SUFFIX}"
@@ -270,6 +281,7 @@ function(catch_discover_tests TARGET)
       "      TEST_SUFFIX"            " [==[" "${_TEST_SUFFIX}"            "]==]"   "\n"
       "      TEST_LIST"              " [==[" "${_TEST_LIST}"              "]==]"   "\n"
       "      TEST_REPORTER"          " [==[" "${_REPORTER}"               "]==]"   "\n"
+      "      TEST_LIST_REPORTER"     " [==[" "${_LIST_REPORTER}"          "]==]"   "\n"
       "      TEST_OUTPUT_DIR"        " [==[" "${_OUTPUT_DIR}"             "]==]"   "\n"
       "      TEST_OUTPUT_PREFIX"     " [==[" "${_OUTPUT_PREFIX}"          "]==]"   "\n"
       "      TEST_OUTPUT_SUFFIX"     " [==[" "${_OUTPUT_SUFFIX}"          "]==]"   "\n"
