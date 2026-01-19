@@ -204,6 +204,10 @@ function(catch_discover_tests TARGET)
     TARGET ${TARGET}
     PROPERTY CROSSCOMPILING_EMULATOR
   )
+  get_property(test_launcher
+    TARGET ${TARGET}
+    PROPERTY TEST_LAUNCHER
+  )
   if(NOT _SKIP_IS_FAILURE)
     set(_PROPERTIES ${_PROPERTIES} SKIP_RETURN_CODE 4)
   endif()
@@ -216,6 +220,7 @@ function(catch_discover_tests TARGET)
               -D "TEST_TARGET=${TARGET}"
               -D "TEST_EXECUTABLE=$<TARGET_FILE:${TARGET}>"
               -D "TEST_EXECUTOR=${crosscompiling_emulator}"
+              -D "TEST_LAUNCHER=${test_launcher}"
               -D "TEST_WORKING_DIR=${_WORKING_DIRECTORY}"
               -D "TEST_SPEC=${_TEST_SPEC}"
               -D "TEST_EXTRA_ARGS=${_EXTRA_ARGS}"
