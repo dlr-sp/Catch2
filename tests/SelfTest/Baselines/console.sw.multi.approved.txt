@@ -4239,21 +4239,21 @@ with message:
 -------------------------------------------------------------------------------
 Directly creating an EnumInfo
 -------------------------------------------------------------------------------
-ToString.tests.cpp:<line number>
+EnumToString.tests.cpp:<line number>
 ...............................................................................
 
-ToString.tests.cpp:<line number>: PASSED:
-  CHECK( enumInfo->lookup(0) == "Value1" )
+EnumToString.tests.cpp:<line number>: PASSED:
+  CHECK( enumInfo.lookup(0) == "Value1" )
 with expansion:
   Value1 == "Value1"
 
-ToString.tests.cpp:<line number>: PASSED:
-  CHECK( enumInfo->lookup(1) == "Value2" )
+EnumToString.tests.cpp:<line number>: PASSED:
+  CHECK( enumInfo.lookup(1) == "Value2" )
 with expansion:
   Value2 == "Value2"
 
-ToString.tests.cpp:<line number>: PASSED:
-  CHECK( enumInfo->lookup(3) == "{** unexpected enum value **}" )
+EnumToString.tests.cpp:<line number>: PASSED:
+  CHECK( enumInfo.lookup(3) == "{** unexpected enum value **}" )
 with expansion:
   {** unexpected enum value **}
   ==
@@ -4296,6 +4296,27 @@ Matchers.tests.cpp:<line number>: FAILED:
 with expansion:
   "this string contains 'abc' as a substring" ends with: "this" (case
   insensitive)
+
+-------------------------------------------------------------------------------
+Enum backed by larger underlying type
+-------------------------------------------------------------------------------
+EnumToString.tests.cpp:<line number>
+...............................................................................
+
+EnumToString.tests.cpp:<line number>: PASSED:
+  REQUIRE( stringify( LargeEnum::Flag1 ) == "Flag1" )
+with expansion:
+  "Flag1" == "Flag1"
+
+EnumToString.tests.cpp:<line number>: PASSED:
+  REQUIRE( stringify( LargeEnum::Flag2 ) == "Flag2" )
+with expansion:
+  "Flag2" == "Flag2"
+
+EnumToString.tests.cpp:<line number>: PASSED:
+  REQUIRE( stringify( LargeEnum::Flag5 ) == "Flag5" )
+with expansion:
+  "Flag5" == "Flag5"
 
 -------------------------------------------------------------------------------
 Enums can quickly have stringification enabled using CATCH_REGISTER_ENUM
@@ -5311,6 +5332,91 @@ Generators.tests.cpp:<line number>: PASSED:
   REQUIRE( i % 2 == 0 )
 with expansion:
   0 == 0
+
+-------------------------------------------------------------------------------
+Generator adapters properly handle isFinite
+  concat generator
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( finite_cat.isFinite() )
+with expansion:
+  true
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( infinite_cat.isFinite() )
+with expansion:
+  !false
+
+-------------------------------------------------------------------------------
+Generator adapters properly handle isFinite
+  take generator
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( take_1.isFinite() )
+with expansion:
+  true
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( take_2.isFinite() )
+with expansion:
+  true
+
+-------------------------------------------------------------------------------
+Generator adapters properly handle isFinite
+  chunk generator
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( finite_chunk.isFinite() )
+with expansion:
+  true
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( infinite_chunk.isFinite() )
+with expansion:
+  !false
+
+-------------------------------------------------------------------------------
+Generator adapters properly handle isFinite
+  map
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( finite_map.isFinite() )
+with expansion:
+  true
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( infinite_map.isFinite() )
+with expansion:
+  !false
+
+-------------------------------------------------------------------------------
+Generator adapters properly handle isFinite
+  filter
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( finite_filter.isFinite() )
+with expansion:
+  true
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( infinite_filter.isFinite() )
+with expansion:
+  !false
 
 -------------------------------------------------------------------------------
 Generators -- adapters
@@ -8168,19 +8274,72 @@ with message:
 
 -------------------------------------------------------------------------------
 MapGenerator can be skipped forward efficiently
+  via calls to next()
 -------------------------------------------------------------------------------
 GeneratorsImpl.tests.cpp:<line number>
 ...............................................................................
 
 GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_calls == 0 )
+with expansion:
+  0 == 0
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_calls == 0 )
+with expansion:
+  0 == 0
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_generator.get() == 3 )
+with expansion:
+  3 == 3
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_calls == 1 )
+with expansion:
+  1 == 1
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_generator.get() == 3 )
+with expansion:
+  3 == 3
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_calls == 1 )
+with expansion:
+  1 == 1
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_calls == 1 )
+with expansion:
+  1 == 1
+
+-------------------------------------------------------------------------------
+MapGenerator can be skipped forward efficiently
+  via calls to skipToNthElement()
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_calls == 0 )
+with expansion:
+  0 == 0
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_calls == 0 )
+with expansion:
+  0 == 0
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
   REQUIRE( map_generator.get() == 4 )
 with expansion:
   4 == 4
 
 GeneratorsImpl.tests.cpp:<line number>: PASSED:
-  REQUIRE( map_calls == map_calls_1 + 1 )
+  REQUIRE( map_calls == 1 )
 with expansion:
-  2 == 2
+  1 == 1
 
 GeneratorsImpl.tests.cpp:<line number>: PASSED:
   REQUIRE( map_generator.get() == 4 )
@@ -8188,9 +8347,14 @@ with expansion:
   4 == 4
 
 GeneratorsImpl.tests.cpp:<line number>: PASSED:
-  REQUIRE( map_calls == map_calls_1 + 1 )
+  REQUIRE( map_calls == 1 )
 with expansion:
-  2 == 2
+  1 == 1
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_calls == 1 )
+with expansion:
+  1 == 1
 
 GeneratorsImpl.tests.cpp:<line number>: PASSED:
   REQUIRE( map_generator.get() == 6 )
@@ -8198,15 +8362,41 @@ with expansion:
   6 == 6
 
 GeneratorsImpl.tests.cpp:<line number>: PASSED:
-  REQUIRE( map_calls == map_calls_2 + 1 )
+  REQUIRE( map_calls == 2 )
 with expansion:
-  3 == 3
+  2 == 2
 
 GeneratorsImpl.tests.cpp:<line number>: PASSED:
   REQUIRE_THROWS( map_generator.skipToNthElement( 7 ) )
 
 GeneratorsImpl.tests.cpp:<line number>: PASSED:
-  REQUIRE( map_calls == map_calls_2 + 1 )
+  REQUIRE( map_calls == 2 )
+with expansion:
+  2 == 2
+
+-------------------------------------------------------------------------------
+MapGenerator can handle not default constructible types
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_generator.get().m_i == 1 )
+with expansion:
+  1 == 1
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_generator.next() )
+with expansion:
+  true
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_generator.next() )
+with expansion:
+  true
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE( map_generator.get().m_i == 3 )
 with expansion:
   3 == 3
 
@@ -9144,6 +9334,191 @@ with expansion:
   true
 
 -------------------------------------------------------------------------------
+Parsing path filter specs
+  Only section specs leads to old filter behaviour
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( result )
+with expansion:
+  {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( config.useNewPathFilteringBehaviour )
+with expansion:
+  !false
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Generator specs enable new filter behaviour
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( result )
+with expansion:
+  {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.useNewPathFilteringBehaviour )
+with expansion:
+  true
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Generator specs do not accept stringish arguments
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( result )
+with expansion:
+  !{?}
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Generator specs accept star as argument
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( result )
+with expansion:
+  {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[0] == PathFilter( PathFilter::For::Generator, "*" ) )
+with expansion:
+  {?} == {?}
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Generator specs do not accept negative numbers
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( result )
+with expansion:
+  !{?}
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Generic path spec enables new filter behaviour
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( result )
+with expansion:
+  {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.useNewPathFilteringBehaviour )
+with expansion:
+  true
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[0] == PathFilter( PathFilter::For::Generator, "1" ) )
+with expansion:
+  {?} == {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[1] == PathFilter( PathFilter::For::Section, "foobar" ) )
+with expansion:
+  {?} == {?}
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Generic path spec for generator is validated
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( result )
+with expansion:
+  !{?}
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Generic path spec without colon is rejected
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( result1 )
+with expansion:
+  !{?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( result2 )
+with expansion:
+  !{?}
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Using both section and generator filters creates filter stack
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( result )
+with expansion:
+  {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[0] == PathFilter( PathFilter::For::Section, "foo-bar" ) )
+with expansion:
+  {?} == {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[1] == PathFilter( PathFilter::For::Generator, "3" ) )
+with expansion:
+  {?} == {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[2] == PathFilter( PathFilter::For::Generator, "123" ) )
+with expansion:
+  {?} == {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[3] == PathFilter( PathFilter::For::Section, "baz" ) )
+with expansion:
+  {?} == {?}
+
+-------------------------------------------------------------------------------
+Parsing path filter specs
+  Section/generator filters are whitespace trimmed
+-------------------------------------------------------------------------------
+CmdLine.tests.cpp:<line number>
+...............................................................................
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( result )
+with expansion:
+  {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[0] == PathFilter(PathFilter::For::Section, "untrimmed" ) )
+with expansion:
+  {?} == {?}
+
+CmdLine.tests.cpp:<line number>: PASSED:
+  REQUIRE( config.pathFilters[1] == PathFilter(PathFilter::For::Generator, "42" ) )
+with expansion:
+  {?} == {?}
+
+-------------------------------------------------------------------------------
 Parsing sharding-related cli flags
   shard-count
 -------------------------------------------------------------------------------
@@ -9338,14 +9713,14 @@ CmdLine.tests.cpp:<line number>
 ...............................................................................
 
 CmdLine.tests.cpp:<line number>: PASSED:
-  REQUIRE( cli.parse( { "test", "--warn", "NoAssertions", "--warn", "UnmatchedTestSpec" } ) )
+  REQUIRE( cli.parse( { "test", "--warn", "NoAssertions", "--warn", "UnmatchedTestSpec", "--warn", "InfiniteGenerators" } ) )
 with expansion:
   {?}
 
 CmdLine.tests.cpp:<line number>: PASSED:
-  REQUIRE( config.warnings == ( WarnAbout::NoAssertions | WarnAbout::UnmatchedTestSpec ) )
+  REQUIRE( config.warnings == ( WarnAbout::NoAssertions | WarnAbout::UnmatchedTestSpec | WarnAbout::InfiniteGenerator ) )
 with expansion:
-  3 == 3
+  7 == 7
 
 -------------------------------------------------------------------------------
 Pointers can be compared to null
@@ -10366,6 +10741,39 @@ RandomNumberGeneration.tests.cpp:<line number>: PASSED:
   REQUIRE_THROWS( Catch::generateRandomSeed(static_cast<Catch::GenerateFrom>(77)) )
 
 -------------------------------------------------------------------------------
+RandomGenerator reports itself as infinite - float
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( Catch::Generators::random( TestType{ 0 }, TestType{ 100 } ).isFinite() )
+with expansion:
+  !false
+
+-------------------------------------------------------------------------------
+RandomGenerator reports itself as infinite - int
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( Catch::Generators::random( TestType{ 0 }, TestType{ 100 } ).isFinite() )
+with expansion:
+  !false
+
+-------------------------------------------------------------------------------
+RandomGenerator reports itself as infinite - long double
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE_FALSE( Catch::Generators::random( TestType{ 0 }, TestType{ 100 } ).isFinite() )
+with expansion:
+  !false
+
+-------------------------------------------------------------------------------
 Range type with sentinel
 -------------------------------------------------------------------------------
 ToString.tests.cpp:<line number>
@@ -10433,6 +10841,15 @@ Matchers.tests.cpp:<line number>: PASSED:
   CHECK_THAT( actual, !UnorderedEquals( expected ) )
 with expansion:
   { 'a', 'b' } not UnorderedEquals: { 'c', 'b' }
+
+-------------------------------------------------------------------------------
+RepeatGenerator refuses infinite generators
+-------------------------------------------------------------------------------
+GeneratorsImpl.tests.cpp:<line number>
+...............................................................................
+
+GeneratorsImpl.tests.cpp:<line number>: PASSED:
+  REQUIRE_THROWS( RepeatGenerator<int>( 2, random( 1, 100 ) ) )
 
 -------------------------------------------------------------------------------
 Reporter's write listings to provided stream
@@ -17976,10 +18393,10 @@ with expansion:
 parseEnums
   No enums
 -------------------------------------------------------------------------------
-ToString.tests.cpp:<line number>
+EnumToString.tests.cpp:<line number>
 ...............................................................................
 
-ToString.tests.cpp:<line number>: PASSED:
+EnumToString.tests.cpp:<line number>: PASSED:
   CHECK_THAT( parseEnums( "" ), Equals( std::vector<Catch::StringRef>{} ) )
 with expansion:
   {  } Equals: {  }
@@ -17988,20 +18405,20 @@ with expansion:
 parseEnums
   One enum value
 -------------------------------------------------------------------------------
-ToString.tests.cpp:<line number>
+EnumToString.tests.cpp:<line number>
 ...............................................................................
 
-ToString.tests.cpp:<line number>: PASSED:
+EnumToString.tests.cpp:<line number>: PASSED:
   CHECK_THAT( parseEnums( "ClassName::EnumName::Value1" ), Equals(std::vector<Catch::StringRef>{"Value1"} ) )
 with expansion:
   { Value1 } Equals: { Value1 }
 
-ToString.tests.cpp:<line number>: PASSED:
+EnumToString.tests.cpp:<line number>: PASSED:
   CHECK_THAT( parseEnums( "Value1" ), Equals( std::vector<Catch::StringRef>{"Value1"} ) )
 with expansion:
   { Value1 } Equals: { Value1 }
 
-ToString.tests.cpp:<line number>: PASSED:
+EnumToString.tests.cpp:<line number>: PASSED:
   CHECK_THAT( parseEnums( "EnumName::Value1" ), Equals(std::vector<Catch::StringRef>{"Value1"} ) )
 with expansion:
   { Value1 } Equals: { Value1 }
@@ -18010,20 +18427,20 @@ with expansion:
 parseEnums
   Multiple enum values
 -------------------------------------------------------------------------------
-ToString.tests.cpp:<line number>
+EnumToString.tests.cpp:<line number>
 ...............................................................................
 
-ToString.tests.cpp:<line number>: PASSED:
+EnumToString.tests.cpp:<line number>: PASSED:
   CHECK_THAT( parseEnums( "ClassName::EnumName::Value1, ClassName::EnumName::Value2" ), Equals( std::vector<Catch::StringRef>{"Value1", "Value2"} ) )
 with expansion:
   { Value1, Value2 } Equals: { Value1, Value2 }
 
-ToString.tests.cpp:<line number>: PASSED:
+EnumToString.tests.cpp:<line number>: PASSED:
   CHECK_THAT( parseEnums( "ClassName::EnumName::Value1, ClassName::EnumName::Value2, ClassName::EnumName::Value3" ), Equals( std::vector<Catch::StringRef>{"Value1", "Value2", "Value3"} ) )
 with expansion:
   { Value1, Value2, Value3 } Equals: { Value1, Value2, Value3 }
 
-ToString.tests.cpp:<line number>: PASSED:
+EnumToString.tests.cpp:<line number>: PASSED:
   CHECK_THAT( parseEnums( "ClassName::EnumName::Value1,ClassName::EnumName::Value2 , ClassName::EnumName::Value3" ), Equals( std::vector<Catch::StringRef>{"Value1", "Value2", "Value3"} ) )
 with expansion:
   { Value1, Value2, Value3 } Equals: { Value1, Value2, Value3 }
@@ -19706,6 +20123,6 @@ Misc.tests.cpp:<line number>
 Misc.tests.cpp:<line number>: PASSED:
 
 ===============================================================================
-test cases:  443 |  323 passed |  96 failed | 6 skipped | 18 failed as expected
-assertions: 2362 | 2161 passed | 158 failed | 43 failed as expected
+test cases:  451 |  331 passed |  96 failed | 6 skipped | 18 failed as expected
+assertions: 2416 | 2215 passed | 158 failed | 43 failed as expected
 

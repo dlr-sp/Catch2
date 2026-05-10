@@ -144,6 +144,7 @@ Nor would this
 :test-result: SKIP Empty generators can SKIP in constructor
 :test-result: PASS Empty stream name opens cout stream
 :test-result: FAIL EndsWith string matcher
+:test-result: PASS Enum backed by larger underlying type
 :test-result: PASS Enums can quickly have stringification enabled using CATCH_REGISTER_ENUM
 :test-result: PASS Enums in namespaces can quickly have stringification enabled using CATCH_REGISTER_ENUM
 :test-result: PASS Epsilon only applies to Approx's value
@@ -169,6 +170,7 @@ Nor would this
 :test-result: PASS Floating point matchers: double
 :test-result: PASS Floating point matchers: float
 :test-result: PASS GENERATE can combine literals and generators
+:test-result: PASS Generator adapters properly handle isFinite
 :test-result: PASS Generators -- adapters
 :test-result: PASS Generators -- simple
 :test-result: PASS Generators can be skipped forward
@@ -192,6 +194,7 @@ Nor would this
 :test-result: PASS Less-than inequalities with different epsilons
 :test-result: PASS ManuallyRegistered
 :test-result: PASS MapGenerator can be skipped forward efficiently
+:test-result: PASS MapGenerator can handle not default constructible types
 :test-result: PASS Matchers can be (AllOf) composed with the && operator
 :test-result: PASS Matchers can be (AnyOf) composed with the || operator
 :test-result: PASS Matchers can be composed with both && and ||
@@ -214,6 +217,7 @@ Nor would this
 :test-result: PASS Overloaded comma or address-of operators are not used
 :test-result: PASS Parse uints
 :test-result: PASS Parsed tags are matched case insensitive
+:test-result: PASS Parsing path filter specs
 :test-result: PASS Parsing sharding-related cli flags
 :test-result: PASS Parsing tags with non-alphabetical characters is pass-through
 :test-result: PASS Parsing warnings
@@ -226,11 +230,15 @@ Nor would this
 :test-result: PASS Product with differing arities - std::tuple<int>
 :test-result: PASS Random seed generation accepts known methods
 :test-result: PASS Random seed generation reports unknown methods
+:test-result: PASS RandomGenerator reports itself as infinite - float
+:test-result: PASS RandomGenerator reports itself as infinite - int
+:test-result: PASS RandomGenerator reports itself as infinite - long double
 :test-result: PASS Range type with sentinel
 :test-result: FAIL Reconstruction should be based on stringification: #914
 :test-result: FAIL Regex string matcher
 :test-result: PASS Registering reporter with '::' in name fails
 :test-result: PASS Regression test #1
+:test-result: PASS RepeatGenerator refuses infinite generators
 :test-result: PASS Reporter's write listings to provided stream
 :test-result: PASS Reproducer for #2309 - a very long description past 80 chars (default console width) with a late colon : blablabla
 :test-result: PASS SUCCEED counts as a test pass
