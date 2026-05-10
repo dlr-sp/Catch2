@@ -281,6 +281,11 @@ TEST_CASE("#1913 - GENERATEs can share a line", "[regression][generators]") {
     REQUIRE(i != j);
 }
 
+#if defined( __clang__ )
+# pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wunreachable-code-return"
+#endif
+
 namespace {
     class test_generator : public Catch::Generators::IGenerator<int> {
     public:
@@ -296,6 +301,7 @@ namespace {
         }
 
         auto next() -> bool override { return false; }
+        auto isFinite() const -> bool override { return true; }
     };
 
     static auto make_test_generator()
@@ -304,6 +310,10 @@ namespace {
     }
 
 } // namespace
+
+#if defined( __clang__ )
+#    pragma clang diagnostic pop
+#endif
 
 TEST_CASE( "#2615 - Throwing in constructor generator fails test case but does not abort",
            "[!shouldfail][regression][generators]" ) {

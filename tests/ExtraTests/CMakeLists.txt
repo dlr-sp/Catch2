@@ -56,9 +56,9 @@ set(TESTS_DIR ${CATCH_DIR}/tests/ExtraTests)
 
 add_executable(PrefixedMacros ${TESTS_DIR}/X01-PrefixedMacros.cpp)
 target_compile_definitions(PrefixedMacros PRIVATE CATCH_CONFIG_PREFIX_ALL CATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
-# Macro configuration does not touch the compiled parts, so we can link
-# it against the main library
-target_link_libraries(PrefixedMacros Catch2WithMain)
+# We want to verify that the main library can also be built with prefixed
+# macros, regression test for #3087.
+target_link_libraries(PrefixedMacros Catch2_buildall_interface)
 
 add_test(NAME CATCH_CONFIG_PREFIX_ALL COMMAND PrefixedMacros -s)
 set_tests_properties(CATCH_CONFIG_PREFIX_ALL
@@ -174,7 +174,7 @@ target_compile_definitions(DeferredStaticChecks PRIVATE "CATCH_CONFIG_RUNTIME_ST
 add_test(NAME DeferredStaticChecks COMMAND DeferredStaticChecks -r compact)
 set_tests_properties(DeferredStaticChecks
   PROPERTIES
-    PASS_REGULAR_EXPRESSION "test cases: 1 \\| 1 failed\nassertions: 3 \\| 3 failed"
+    PASS_REGULAR_EXPRESSION "test cases: 1 \\| 1 failed\nassertions: 3 \\| 3 failed;test cases: 1 \\| 1 failed\nassertions: 4 \\| 4 failed"
 )
 
 add_executable(MixingClearedAndUnclearedMessages ${TESTS_DIR}/X06-MixingClearedAndUnclearedMessages.cpp)
@@ -588,4 +588,18 @@ set_tests_properties(ThreadSafetyTests::UnscopedMessagesAndAssertions
   PROPERTIES
     PASS_REGULAR_EXPRESSION "assertions: 401 \\| 401 failed as expected"
     RUN_SERIAL ON
+)
+
+add_executable(InfiniteGenerators ${TESTS_DIR}/X95-InfiniteGenerators.cpp)
+target_link_libraries(InfiniteGenerators PRIVATE Catch2::Catch2WithMain)
+
+add_test(
+  NAME Warnings::InfiniteGenerators
+  COMMAND $<TARGET_FILE:InfiniteGenerators> --warn InfiniteGenerators
+)
+set_tests_properties(Warnings::InfiniteGenerators
+  PROPERTIES
+    # One test case fails with infinite generator, but the other one runs
+    PASS_REGULAR_EXPRESSION "test cases: 2 \\| 1 passed \\| 1 failed"
+    TIMEOUT 5
 )
